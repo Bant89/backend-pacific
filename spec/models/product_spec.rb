@@ -1,5 +1,10 @@
+# frozen_string_literal: true
+
 require 'rails_helper'
 
 RSpec.describe Product, type: :model do
-  pending "add some examples to (or delete) #{__FILE__}"
+  it { should belong_to(:store) }
+  %i[title price amount].each do |field|
+    it { should validate_presence_of(field) }
+  end
 end

@@ -1,5 +1,10 @@
+# frozen_string_literal: true
+
 require 'rails_helper'
 
 RSpec.describe Store, type: :model do
-  pending "add some examples to (or delete) #{__FILE__}"
+  it { should have_many(:products).dependent(:destroy) }
+  %i[title created_by].each do |field|
+    it { should validate_presence_of(field) }
+  end
 end
