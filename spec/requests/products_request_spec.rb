@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe 'Products' do
+RSpec.describe 'Products', type: :request do
   let!(:store) { create(:store) }
   let!(:products) { create_list(:product, 20, store_id: store.id) }
   let(:store_id) { store.id }
@@ -18,17 +18,19 @@ RSpec.describe 'Products' do
       end
 
       it 'returns all store items' do
-        expect(response).to eq(20)
+        expect(json.size).to eq(20)
       end
     end
 
     context 'when store does not exist' do
+      let(:store_id) { '4134134' }
+
       it 'returns status code 404' do
         expect(response).to have_http_status(404)
       end
 
       it 'returns a not found message' do
-        expect(response.body).to match(/Coudln't find Store/)
+        expect(json['message']).to match(/Couldn't find Store/)
       end
     end
   end
@@ -48,12 +50,13 @@ RSpec.describe 'Products' do
     end
 
     context 'when store item does not exist' do
+      let(:id) { '4134134' }
       it 'returns status code 404' do
         expect(response).to have_http_status(404)
       end
 
       it 'returns not found message' do
-        expect(response.body).to match(/Couldn't find product/)
+        expect(response.body).to match(/Couldn't find Product/)
       end
     end
   end
@@ -63,7 +66,7 @@ RSpec.describe 'Products' do
     let(:valid_attributes) { { product: { title: 'Fourwheel LE', price: 350, amount: 10, category: 'toys' } } }
 
     context 'when request has valid attributes' do
-      before { post "/store/#{store_id}/products/#{id}", params: valid_attributes }
+      before { post "/stores/#{store_id}/products", params: valid_attributes }
 
       it 'returns status code 201' do
         expect(response).to have_http_status(201)
@@ -71,21 +74,21 @@ RSpec.describe 'Products' do
     end
 
     context 'when request has invalid attributes' do
-      before { post "/store/#{store_id}/products/#{id}", params: {} }
+      before { post "/stores/#{store_id}/products", params: { product: { amount: nil } } }
 
       it 'returns status code 422' do
         expect(response).to have_http_status(422)
       end
 
       it 'returns a failure message' do
-        expect(response.body).to match(/Validation failed: Title can't be blank /)
+        expect(json['message']).to match(/Validation failed: Amount can't be blank, Title can't be blank, Price can't be blank/)
       end
     end
   end
 
   # Test suite for PUT /store/:store_id/products/:product_id
   describe 'PUT /stores/:store_id/products/:product_id' do
-    let(:valid_attributes) { { product: { name: 'Fourwheelszasd' } } }
+    let(:valid_attributes) { { product: { title: 'Fourwheelszasd' } } }
 
     before { put "/stores/#{store_id}/products/#{id}", params: valid_attributes }
 
@@ -96,17 +99,18 @@ RSpec.describe 'Products' do
 
       it 'updates the product' do
         updated_product = Product.find(id)
-        expect(updated_product.name).to match(/Fourwheelszasd/)
+        expect(updated_product.title).to match(/Fourwheelszasd/)
       end
     end
 
     context 'when the item does not exists' do
+      let(:id) { 'asfqeazcvwq' }
       it 'returns status code 404' do
         expect(response).to have_http_status(404)
       end
 
       it 'returns not found message' do
-        expect(response.body).to match(/Product not found/)
+        expect(json['message']).to match(/Couldn't find Product/)
       end
     end
   end
