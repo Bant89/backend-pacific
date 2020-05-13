@@ -35,7 +35,7 @@ class StoresController < ApplicationController
   private
 
   def store_params
-    params.permit(:title, :created_by, :description, :category, :image)
+    params.require(:store).permit(:title, :created_by, :description, :category, :image)
   end
 
   def set_store
