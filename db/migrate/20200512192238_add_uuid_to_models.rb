@@ -17,8 +17,6 @@ class AddUuidToModels < ActiveRecord::Migration[6.0]
     execute 'ALTER TABLE stores drop constraint stores_pkey CASCADE;'
     execute 'ALTER TABLE stores ADD PRIMARY KEY  (id);'
     execute 'DROP SEQUENCE IF EXISTS stores_id_seq CASCADE'
-    # execute 'ALTER TABLE ONLY stores ALTER COLUMN store_id DROP DEFAULT;'
-    # change_column_null :stores, :integer_id, true
   end
 
   def down

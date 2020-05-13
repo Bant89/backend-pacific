@@ -5,4 +5,8 @@ class Product < ApplicationRecord
   belongs_to :store
 
   validates_presence_of :amount, :title, :price
+
+  before_create do
+    self.id = SecureRandom.uuid
+  end
 end
