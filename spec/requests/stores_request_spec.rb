@@ -49,7 +49,7 @@ RSpec.describe 'Stores', type: :request do
 
   # Test suite for POST
   describe 'POST /stores' do
-    let(:valid_attributes) { { title: 'Pepe Ganga', created_by: 'd6d98b88-c866-4496-9bd4-de7ba48d0f52' } }
+    let(:valid_attributes) { { store: { title: 'Pepe Ganga', created_by: 'd6d98b88-c866-4496-9bd4-de7ba48d0f52' } } }
 
     context 'when the request is valid' do
       before { post '/stores', params: valid_attributes }
@@ -64,7 +64,9 @@ RSpec.describe 'Stores', type: :request do
     end
 
     context 'when the request is invalid' do
-      before { post '/stores', params: { created_by: 'd6d98b88-c866-4496-9bd4-de7ba48d0f52' } }
+      let(:invalid_attributes) { { store: { created_by: 'd6d98b88-c866-4496-9bd4-de7ba48d0f52' } } }
+
+      before { post '/stores', params: invalid_attributes }
 
       it 'returns status code 422' do
         expect(response).to have_http_status(422)
@@ -79,7 +81,7 @@ RSpec.describe 'Stores', type: :request do
 
   # Test suite for PUT
   describe 'PUT /stores/:id' do
-    let(:valid_attributes) { { title: 'Mundo del Juguete' } }
+    let(:valid_attributes) { { store: { title: 'Mundo del Juguete' } } }
 
     context 'when the record exists' do
       before { put "/stores/#{store_id}", params: valid_attributes }

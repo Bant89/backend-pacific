@@ -7,5 +7,6 @@ FactoryBot.define do
     price { Faker::Commerce.price }
     amount { Faker::Number.number(digits: 3) }
     category { Faker::Commerce.department(max: 1) }
+    store_id { nil }
   end
 end
