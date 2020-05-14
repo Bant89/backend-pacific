@@ -3,12 +3,13 @@
 require 'rails_helper'
 
 RSpec.describe 'Stores', type: :request do
+  let(:user) { create(:user) }
   let!(:stores) { create_list(:store, 10) }
   let(:store_id) { stores.first.id }
-
+  let(:headers) { valid_headers }
   # Test suite for GET
   describe 'GET /stores' do
-    before { get '/stores' }
+    before { get '/stores', params: {}, headers: headers }
 
     it 'returns stores' do
       expect(json).not_to be_empty
@@ -21,7 +22,7 @@ RSpec.describe 'Stores', type: :request do
   end
 
   describe 'GET /stores/:id' do
-    before { get "/stores/#{store_id}" }
+    before { get "/stores/#{store_id}", params: {}, headers: headers }
 
     context 'when the record exists' do
       it 'returns the store' do
@@ -49,10 +50,10 @@ RSpec.describe 'Stores', type: :request do
 
   # Test suite for POST
   describe 'POST /stores' do
-    let(:valid_attributes) { { store: { title: 'Pepe Ganga', created_by: 'd6d98b88-c866-4496-9bd4-de7ba48d0f52' } } }
+    let(:valid_attributes) { { store: { title: 'Pepe Ganga', created_by: user.id.to_s } } }
 
     context 'when the request is valid' do
-      before { post '/stores', params: valid_attributes }
+      before { post '/stores', params: valid_attributes, headers: headers }
 
       it 'creates a store' do
         expect(json['title']).to eq('Pepe Ganga')
@@ -64,9 +65,9 @@ RSpec.describe 'Stores', type: :request do
     end
 
     context 'when the request store params are invalid' do
-      let(:invalid_attributes) { { store: { created_by: 'd6d98b88-c866-4496-9bd4-de7ba48d0f52' } } }
+      let(:invalid_attributes) { { store: { created_by: user.id.to_s } } }
 
-      before { post '/stores', params: invalid_attributes }
+      before { post '/stores', params: invalid_attributes, headers: headers }
 
       it 'returns status code 422' do
         expect(response).to have_http_status(422)
@@ -81,7 +82,7 @@ RSpec.describe 'Stores', type: :request do
     context 'when the request store param does not exist' do
       let(:no_attributes) { {} }
 
-      before { post '/stores', params: no_attributes }
+      before { post '/stores', params: no_attributes, headers: headers }
 
       it 'returns status code 406' do
         expect(response).to have_http_status(406)
@@ -99,7 +100,7 @@ RSpec.describe 'Stores', type: :request do
     let(:valid_attributes) { { store: { title: 'Mundo del Juguete' } } }
 
     context 'when the record exists' do
-      before { put "/stores/#{store_id}", params: valid_attributes }
+      before { put "/stores/#{store_id}", params: valid_attributes, headers: headers }
 
       it 'updates the record' do
         expect(response.body).to be_empty
@@ -113,7 +114,7 @@ RSpec.describe 'Stores', type: :request do
 
   # Test suite for DELETE
   describe 'DELETE /stores/:id' do
-    before { delete "/stores/#{store_id}" }
+    before { delete "/stores/#{store_id}", params: {}, headers: headers }
 
     it 'returns status code 204' do
       expect(response).to have_http_status(204)
