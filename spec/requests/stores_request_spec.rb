@@ -63,7 +63,7 @@ RSpec.describe 'Stores', type: :request do
       end
     end
 
-    context 'when the request is invalid' do
+    context 'when the request store params are invalid' do
       let(:invalid_attributes) { { store: { created_by: 'd6d98b88-c866-4496-9bd4-de7ba48d0f52' } } }
 
       before { post '/stores', params: invalid_attributes }
@@ -75,6 +75,21 @@ RSpec.describe 'Stores', type: :request do
       it 'returns a validation failure message' do
         expect(response.body)
           .to match(/Validation failed: Title can't be blank/)
+      end
+    end
+
+    context 'when the request store param does not exist' do
+      let(:no_attributes) { {} }
+
+      before { post '/stores', params: no_attributes }
+
+      it 'returns status code 406' do
+        expect(response).to have_http_status(406)
+      end
+
+      it 'returns a validation failure message' do
+        expect(response.body)
+          .to match(/param is missing or the value is empty/)
       end
     end
   end

@@ -84,6 +84,21 @@ RSpec.describe 'Products', type: :request do
         expect(json['message']).to match(/Validation failed: Amount can't be blank, Title can't be blank, Price can't be blank/)
       end
     end
+
+    context 'when the request store param does not exist' do
+      let(:no_attributes) { {} }
+
+      before { post "/stores/#{store_id}/products", params: no_attributes }
+
+      it 'returns status code 406' do
+        expect(response).to have_http_status(406)
+      end
+
+      it 'returns a validation failure message' do
+        expect(response.body)
+          .to match(/param is missing or the value is empty/)
+      end
+    end
   end
 
   # Test suite for PUT /store/:store_id/products/:product_id
