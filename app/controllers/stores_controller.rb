@@ -11,6 +11,7 @@ class StoresController < ApplicationController
 
   # POST /store
   def create
+    byebug
     @store = current_user.store.create!(store_params)
     json_response(@store, :created)
   end

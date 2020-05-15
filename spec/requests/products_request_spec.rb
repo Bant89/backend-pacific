@@ -68,7 +68,7 @@ RSpec.describe 'Products', type: :request do
     let(:valid_attributes) { { product: { title: 'Fourwheel LE', price: 350, amount: 10, category: 'toys' } } }
 
     context 'when request has valid attributes' do
-      before { post "/stores/#{store_id}/products", params: valid_attributes, headers: headers }
+      before { post "/stores/#{store_id}/products", params: valid_attributes.to_json, headers: headers }
 
       it 'returns status code 201' do
         expect(response).to have_http_status(201)
@@ -76,7 +76,7 @@ RSpec.describe 'Products', type: :request do
     end
 
     context 'when request has invalid attributes' do
-      before { post "/stores/#{store_id}/products", params: { product: { amount: nil } }, headers: headers }
+      before { post "/stores/#{store_id}/products", params: { product: { amount: nil } }.to_json, headers: headers }
 
       it 'returns status code 422' do
         expect(response).to have_http_status(422)
@@ -107,7 +107,7 @@ RSpec.describe 'Products', type: :request do
   describe 'PUT /stores/:store_id/products/:product_id' do
     let(:valid_attributes) { { product: { title: 'Fourwheelszasd' } } }
 
-    before { put "/stores/#{store_id}/products/#{id}", params: valid_attributes, headers: headers }
+    before { put "/stores/#{store_id}/products/#{id}", params: valid_attributes.to_json, headers: headers }
 
     context 'when item exists' do
       it 'returns status code 204' do

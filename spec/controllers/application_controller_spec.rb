@@ -13,7 +13,7 @@ RSpec.describe ApplicationController, type: :controller do
       before { allow(request).to receive(:headers).and_return(headers) }
 
       it 'sets the current user' do
-        expect(subject.instance_eval { authorize_request }).to eq(user)
+        expect(subject.instance_eval { authorize_request }[:user]).to eq(user)
       end
     end
 
