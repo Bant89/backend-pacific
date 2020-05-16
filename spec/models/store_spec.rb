@@ -4,7 +4,7 @@ require 'rails_helper'
 
 RSpec.describe Store, type: :model do
   it { should have_many(:products).dependent(:destroy) }
-  %i[title created_by].each do |field|
+  %i[title].each do |field|
     it { should validate_presence_of(field) }
   end
 end

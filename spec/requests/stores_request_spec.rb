@@ -3,8 +3,8 @@
 require 'rails_helper'
 
 RSpec.describe 'Stores', type: :request do
-  let(:user) { create(:user) }
-  let!(:stores) { create_list(:store, 10) }
+  let!(:user) { create(:user) }
+  let!(:stores) { create_list(:store, 10, user_id: user.id) }
   let(:store_id) { stores.first.id }
   let(:headers) { valid_headers }
   # Test suite for GET
@@ -50,7 +50,7 @@ RSpec.describe 'Stores', type: :request do
 
   # Test suite for POST
   describe 'POST /stores' do
-    let(:valid_attributes) { { store: { title: 'Pepe Ganga', created_by: user.id.to_s } } }
+    let(:valid_attributes) { { store: { title: 'Pepe Ganga', user_id: user.id } } }
 
     context 'when the request is valid' do
       before { post '/stores', params: valid_attributes.to_json, headers: headers }
@@ -74,8 +74,8 @@ RSpec.describe 'Stores', type: :request do
       end
 
       it 'returns a validation failure message' do
-        expect(response.body)
-          .to match(/Validation failed: Title can't be blank/)
+        expect(json['message'])
+          .to match(/Validation failed: User must exist, Title can't be blank/)
       end
     end
 

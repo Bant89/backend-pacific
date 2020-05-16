@@ -4,7 +4,7 @@ require 'rails_helper'
 
 RSpec.describe 'Products', type: :request do
   let(:user) { create(:user) }
-  let!(:store) { create(:store) }
+  let!(:store) { create(:store, user_id: user.id) }
   let!(:products) { create_list(:product, 20, store_id: store.id) }
   let(:store_id) { store.id }
   let(:id) { products.first.id }

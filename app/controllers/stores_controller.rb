@@ -11,8 +11,7 @@ class StoresController < ApplicationController
 
   # POST /store
   def create
-    byebug
-    @store = current_user.store.create!(store_params)
+    @store = Store.create!(store_params)
     json_response(@store, :created)
   end
 
@@ -36,7 +35,7 @@ class StoresController < ApplicationController
   private
 
   def store_params
-    params.require(:store).permit(:title, :description, :category, :image)
+    params.require(:store).permit(:title, :description, :category, :image, :user_id)
   end
 
   def set_store

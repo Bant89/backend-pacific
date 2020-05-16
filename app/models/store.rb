@@ -3,7 +3,8 @@
 class Store < ApplicationRecord
   self.implicit_order_column = 'created_at'
   has_many :products, dependent: :destroy
-  validates_presence_of :created_by, :title
+  belongs_to :user
+  validates_presence_of :title
 
   before_create do
     self.id = SecureRandom.uuid

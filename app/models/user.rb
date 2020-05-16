@@ -3,7 +3,7 @@
 class User < ApplicationRecord
   has_secure_password
 
-  has_one :store, foreign_key: :created_by
+  has_one :store
 
   validates_presence_of :name, :email, :password_digest, :is_admin
 end
