@@ -20,7 +20,8 @@ class UsersController < ApplicationController
       :email,
       :password,
       :password_confirmation,
-      :is_admin
+      :is_admin,
+      :avatar
     )
   end
 end
