@@ -5,5 +5,6 @@ class User < ApplicationRecord
 
   has_one :store
   has_one_attached :avatar
-  validates_presence_of :name, :email, :password_digest, :is_admin
+  validates_presence_of :name, :email, :password_digest
+  validates :is_admin, inclusion: [true, false]
 end

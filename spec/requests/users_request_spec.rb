@@ -8,10 +8,13 @@ RSpec.describe 'Users', type: :request do
   let(:valid_attributes) do
     attributes_for(:user, password_confirmation: user.password)
   end
+  let(:test_attributes) do
+    { user: valid_attributes }
+  end
 
   describe 'POST /signup' do
     context 'when valid request' do
-      before { post '/signup', params: valid_attributes.to_json, headers: headers }
+      before { post '/signup', params: test_attributes.to_json, headers: headers }
 
       it 'creates a new user' do
         expect(response).to have_http_status(201)
@@ -27,15 +30,15 @@ RSpec.describe 'Users', type: :request do
     end
 
     context 'when invalid request' do
-      before { post '/signup', params: {}, headers: headers }
+      before { post '/signup', params: { user: {} }.to_json, headers: headers }
 
       it 'does not create a new user' do
-        expect(response).to have_http_status(422)
+        expect(response).to have_http_status(406)
       end
 
       it 'returns failure message' do
         expect(json['message'])
-          .to match(/Validation failed: Password can't be blank, Name can't be blank, Email can't be blank, Password digest can't be blank/)
+          .to match(/param is missing or the value is empty: user/)
       end
     end
   end
