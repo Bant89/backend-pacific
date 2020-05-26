@@ -2,9 +2,9 @@
 
 class UsersController < ApplicationController
   skip_before_action :authorize_request, only: %i[create]
+  before_action :set_user, only: %i[show update]
   def create
     user = User.create!(user_values)
-    user.avatar.attach(user_params[:avatar])
     auth_token = AuthenticateUser.new(user.email, user.password).call
     response = {
       message: Message.account_created,
@@ -15,8 +15,7 @@ class UsersController < ApplicationController
 
   # PUT /user/:id
   def update
-    @user.update(user_params)
-    @user.avatar.attach(user_params[:avatar])
+    @user.update(user_values)
   end
 
   # GET /user/:id
@@ -27,7 +26,7 @@ class UsersController < ApplicationController
   private
 
   def user_params
-    params.require(:user).permit(
+    params.permit(
       :id,
       :name,
       :email,
@@ -39,8 +38,8 @@ class UsersController < ApplicationController
   end
 
   def set_user
-    @user = User.find(user_params[:id]) unless user_params[:id].nil?
-    @user = @current_user
+    @user = @current_user unless user_values[:id].present?
+    @user = User.find(user_values[:id])
   end
 
   def user_values
