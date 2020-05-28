@@ -5,7 +5,8 @@ Rails.application.routes.draw do
   get '/health', to: 'health#health'
   post 'auth/login', to: 'authentication#authenticate'
   post 'signup', to: 'users#create'
-  put '/photos/:id', to: 'photos#update'
+  put '/photos/user/:id', to: 'photos#update_user'
+  put '/photos/store/:id', to: 'photos#update_store'
   resources :stores do
     resources :products
   end
