@@ -7,6 +7,7 @@ Rails.application.routes.draw do
   post 'signup', to: 'users#create'
   put '/photos/user/:id', to: 'photos#update_user'
   put '/photos/store/:id', to: 'photos#update_store'
+  put '/photos/product/:id', to: 'photos#update_product'
   resources :stores do
     resources :products
   end
