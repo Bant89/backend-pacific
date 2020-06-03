@@ -6,6 +6,7 @@ class Store < ApplicationRecord
   has_one_attached :image
   belongs_to :user
   validates_presence_of :title
+  validates :title, uniqueness: { case_sensitive: false }
 
   before_create do
     self.id = SecureRandom.uuid
