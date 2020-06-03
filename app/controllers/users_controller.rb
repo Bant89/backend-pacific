@@ -5,6 +5,7 @@ class UsersController < ApplicationController
   before_action :set_user, only: %i[show update]
   def create
     user = User.create!(user_params)
+    UserMailer.welcome_email(user).deliver_now
     auth_token = AuthenticateUser.new(user.email, user.password).call
     response = {
       message: Message.account_created,
@@ -32,8 +33,7 @@ class UsersController < ApplicationController
       :email,
       :password,
       :password_confirmation,
-      :is_admin,
-      :avatar
+      :is_admin
     )
   end
 
