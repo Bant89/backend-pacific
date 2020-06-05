@@ -20,7 +20,15 @@ Rails.application.routes.draw do
   resources :stores do
     resources :products
   end
+
+  # User Routes
   resources :users, only: %i[show create update] do
     get :avatar, on: :member
+  end
+
+  resources :users, only: %i[create update] do
+    collection do
+      post 'email_update'
+    end
   end
 end

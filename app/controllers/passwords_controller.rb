@@ -10,6 +10,7 @@ class PasswordsController < ApplicationController
 
     if user.present? && user.confirmed_at?
       user.generate_password_token!
+      UserMailer.new_password(user).deliver_now
       json_response({ status: 'ok' }, :ok)
     else
       json_response({ error: 'Email address not found. Please try again' }, :not_found)

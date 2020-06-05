@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_06_03_212345) do
+ActiveRecord::Schema.define(version: 2020_06_03_225034) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
@@ -74,6 +74,7 @@ ActiveRecord::Schema.define(version: 2020_06_03_212345) do
     t.string "avatar_url"
     t.string "reset_password_token"
     t.datetime "reset_password_sent_at"
+    t.string "unconfirmed_email"
     t.index ["created_at"], name: "index_users_on_created_at"
   end
 

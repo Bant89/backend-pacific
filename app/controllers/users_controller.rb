@@ -19,6 +19,9 @@ class UsersController < ApplicationController
     @user.update(user_params)
   end
 
+  # POST /users/email_update
+  def email_update; end
+
   # GET /user/:id
   def show
     json_response(@user)
