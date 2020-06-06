@@ -29,6 +29,7 @@ Rails.application.routes.draw do
   resources :users, only: %i[create update] do
     collection do
       post 'email_update'
+      post 'email_update_confirmed'
     end
   end
 

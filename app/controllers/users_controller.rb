@@ -1,21 +1,22 @@
 # frozen_string_literal: true
 
+# User controller, responsabilities: CRUD, email and user confirmation
 class UsersController < ApplicationController
   skip_before_action :authorize_request, only: %i[create confirm]
   before_action :set_user, only: %i[show update email_update]
   before_action :validate_email_update, only: :email_update
   def create
     user = User.create!(user_params)
-    if user.save
-      # Send confirmation email
-      UserMailer.welcome_email(user).deliver_now
-      auth_token = AuthenticateUser.new(user.email, user.password).call
-      response = {
-        message: Message.account_created,
-        auth_token: auth_token
-      }
-      json_response(response, :created)
-    end
+    return unless user.save
+
+    user.generate_confirmation_instructions
+    UserMailer.confirm_email(user).deliver_now
+    auth_token = AuthenticateUser.new(user.email, user.password).call
+    response = {
+      message: Message.account_created,
+      auth_token: auth_token
+    }
+    json_response(response, :ok)
   end
 
   # PUT /user/:id
@@ -23,19 +24,31 @@ class UsersController < ApplicationController
     @user.update(user_params)
   end
 
-  # POST /users/email_update
-  def email_update; end
-
   # GET /user/:id
   def show
     json_response(@user)
   end
 
+  # POST /users/email_update
   def email_update
     if @user.update_new_email!(@new_email)
-      json_response({ status: 'Email Confirmation has been sent to your new Email.' }, :ok)
+      UserMailer.confirm_email(@user).deliver_now
+      json_response({ status: Message.confirmation_email }, :ok)
     else
-      json_response({ errors: @user.errors.values.flatten.compact }, :bad_request)
+      request_error = @user.errors.values.flatten.compact
+      json_response({ errors: request_error }, :bad_request)
+    end
+  end
+
+  # POST /users/email_update_confirmed
+  def email_update_confirmed
+    token = params[:token].to_s
+    user = User.find_by(confirmation_token: token)
+    if !user || !user.confirmation_token_valid?
+      json_response({ error: Message.invalid_token }, :not_found)
+    else
+      user.update_new_email!
+      json_response({ status: 'Email updated successfully' }, :ok)
     end
   end
 
@@ -46,9 +59,10 @@ class UsersController < ApplicationController
 
     if user.present? && user.confirmation_token_valid?
       user.mark_as_confirmed!
+      UserMailer.welcome_email(user).deliver_now
       json_response({ status: 'User confirmed successfully' }, :ok)
     else
-      json_response({ status: 'Invalid token' }, :not_found)
+      json_response({ status: Message.invalid_token }, :not_found)
     end
   end
 
@@ -79,11 +93,11 @@ class UsersController < ApplicationController
     end
 
     if @new_email == @current_user.email
-      json_response({ status: 'Current Email and New Email cannot be the same' }, :bad_request)
+      json_response({ status: Message.current_new_email }, :bad_request)
     end
 
-    if User.email_used?(@new_email)
-      json_response({ error: 'Email is already in use.' }, :unprocessable_entity)
-    end
+    return unless User.email_used?(@new_email)
+
+    json_response({ error: 'Email already in use.' }, :unprocessable_entity)
   end
 end
