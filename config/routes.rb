@@ -31,4 +31,11 @@ Rails.application.routes.draw do
       post 'email_update'
     end
   end
+
+  # User Confirm endpoint
+  resources :users, only: :create do
+    collection do
+      post 'confirm'
+    end
+  end
 end
