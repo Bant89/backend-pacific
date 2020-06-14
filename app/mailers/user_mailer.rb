@@ -10,4 +10,9 @@ class UserMailer < ApplicationMailer
     @user = user
     mail(to: @user.email, subject: 'New Pacific Stores password')
   end
+
+  def confirm_email(user)
+    @user = user
+    mail(to: @user.email, subject: 'Pacific Stores confirmation email')
+  end
 end

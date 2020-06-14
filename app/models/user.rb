@@ -45,28 +45,40 @@ class User < ApplicationRecord
     end
   end
 
+  def generate_instructions
+    generate_confirmation_instructions
+  end
+
+  def valid_confirmation_token?
+    confirmation_token_valid
+  end
+
+  def confirmation_success!
+    mark_as_confirmed
+  end
+
   private
 
   def generate_token
     SecureRandom.hex(10)
   end
 
-  def confirmation_token_valid?
+  def confirmation_token_valid
     (confirmation_sent_at + 15.days) > Time.now.utc
   end
 
-  def mark_as_confirmed!
+  def mark_as_confirmed
     self.confirmation_token = nil
     self.confirmed_at = Time.now.utc
     save
   end
 
-  def downcase_email
-    self.email = email.delete(' ').downcase
-  end
-
   def generate_confirmation_instructions
     self.confirmation_token = generate_token
     self.confirmation_sent_at = Time.now.utc
+  end
+
+  def downcase_email
+    self.email = email.delete(' ').downcase
   end
 end

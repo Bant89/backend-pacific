@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# Class to store usual return messages for json_response
 class Message
   def self.not_found(record = 'record')
     "Sorry, #{record} not found."
@@ -10,7 +11,7 @@ class Message
   end
 
   def self.invalid_token
-    'Invalid token'
+    'Invalid token. Try requesting a new one'
   end
 
   def self.missing_token
@@ -27,6 +28,14 @@ class Message
 
   def self.account_not_created
     'Account could not be created'
+  end
+
+  def self.confirmation_email
+    'Confirmation token has been sent to email'
+  end
+
+  def self.current_new_email
+    'Current Email and New Email cannot be the same'
   end
 
   def self.expired_token
