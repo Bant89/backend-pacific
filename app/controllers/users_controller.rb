@@ -9,7 +9,8 @@ class UsersController < ApplicationController
     user = User.create!(user_params)
     return unless user.save
 
-    user.generate_confirmation_instructions
+    user.generate_instructions
+    user.save
     UserMailer.confirm_email(user).deliver_now
     auth_token = AuthenticateUser.new(user.email, user.password).call
     response = {
@@ -31,7 +32,7 @@ class UsersController < ApplicationController
 
   # POST /users/email_update
   def email_update
-    if @user.update_new_email!(@new_email)
+    if @user[:user].update_new_email!(@new_email)
       UserMailer.confirm_email(@user).deliver_now
       json_response({ status: Message.confirmation_email }, :ok)
     else
@@ -57,8 +58,8 @@ class UsersController < ApplicationController
 
     user = User.find_by(confirmation_token: token)
 
-    if user.present? && user.confirmation_token_valid?
-      user.mark_as_confirmed!
+    if user.present? && user.valid_confirmation_token?
+      user.confirmation_success!
       UserMailer.welcome_email(user).deliver_now
       json_response({ status: 'User confirmed successfully' }, :ok)
     else
@@ -92,7 +93,7 @@ class UsersController < ApplicationController
       json_response({ status: 'Email cannot be blank' }, :bad_request)
     end
 
-    if @new_email == @current_user.email
+    if @new_email == @current_user[:user].email
       json_response({ status: Message.current_new_email }, :bad_request)
     end
 
