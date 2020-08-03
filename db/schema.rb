@@ -54,14 +54,13 @@ ActiveRecord::Schema.define(version: 2020_06_05_235009) do
   create_table "stores", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "title"
     t.string "description"
+    t.string "created_by"
     t.string "image"
     t.string "category"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.uuid "user_id", null: false
     t.string "image_url"
     t.index ["created_at"], name: "index_stores_on_created_at"
-    t.index ["user_id"], name: "index_stores_on_user_id"
   end
 
   create_table "users", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -78,10 +77,8 @@ ActiveRecord::Schema.define(version: 2020_06_05_235009) do
     t.string "confirmation_token"
     t.datetime "confirmed_at"
     t.datetime "confirmation_sent_at"
-    t.index ["created_at"], name: "index_users_on_created_at"
   end
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "products", "stores"
-  add_foreign_key "stores", "users"
 end
