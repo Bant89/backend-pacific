@@ -2,20 +2,20 @@
 
 # User controller, responsabilities: CRUD, email and user confirmation
 class UsersController < ApplicationController
-  skip_before_action :authorize_request, only: %i[create confirm]
+  # skip_before_action :authorize_request, only: %i[create confirm]
   before_action :set_user, only: %i[show update email_update]
   before_action :validate_email_update, only: :email_update
   def create
     user = User.create!(user_params)
     return unless user.save
 
-    user.generate_instructions
-    user.save
-    UserMailer.confirm_email(user).deliver_now
-    auth_token = AuthenticateUser.new(user.email, user.password).call
+    # user.generate_instructions
+    # user.save
+    # UserMailer.confirm_email(user).deliver_now
+    # auth_token = AuthenticateUser.new(user.email, user.password).call
     response = {
       message: Message.account_created,
-      auth_token: auth_token
+      # auth_token: auth_token
     }
     json_response(response, :ok)
   end
