@@ -10,7 +10,7 @@ class User < ApplicationRecord
   validates :email, uniqueness: { case_sensitive: false }
 
   before_save :downcase_email
-  before_create :generate_confirmation_instructions
+  # before_create :generate_confirmation_instructions
 
   def generate_password_token!
     self.reset_password_token = generate_token

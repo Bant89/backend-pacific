@@ -11,7 +11,12 @@ class PhotosController < ApplicationController
       # When URL is given or raw Base64 data
       photo = photo_params[:photo]
     end
-    json_response(@user) if @user.update!(avatar_url: photo)
+    return unless @user.update!(avatar_url: photo)
+
+    response = {
+      image_url: photo
+    }
+    json_response(response, :ok)
   end
 
   def update_store
@@ -48,7 +53,6 @@ class PhotosController < ApplicationController
       #   # When URL is given or raw Base64 data
       #   photo = photo_params[:photo]
     end
-    byebug
     json_response(@product) if @product.update(images_url: urls)
   end
 
