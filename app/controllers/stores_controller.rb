@@ -32,10 +32,14 @@ class StoresController < ApplicationController
     head :no_content
   end
 
+  def findby_user
+    json_response(Store.find_by(user_id: params[:user_id]))
+  end
+
   private
 
   def store_params
-    params.require(:store).permit(:title, :description, :category, :image, :user_id)
+    params.require(:store).permit(:title, :description, :category, :user_id)
   end
 
   def set_store

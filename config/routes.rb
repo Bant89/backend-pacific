@@ -17,6 +17,7 @@ Rails.application.routes.draw do
   put '/photos/store/:id', to: 'photos#update_store'
   put '/photos/product/:id', to: 'photos#update_product'
 
+  get '/stores/user/:user_id', to: 'stores#findby_user', as: 'store_by_user'
   resources :stores do
     resources :products
   end
