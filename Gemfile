@@ -26,7 +26,7 @@ gem 'active_model_serializers', '~> 0.10.0'
 gem 'will_paginate'
 
 # Use Active Storage variant
-gem 'image_processing', '~> 1.2'
+gem 'image_processing', '~> 1.12'
 
 gem 'aws-sdk-s3', require: false
 
